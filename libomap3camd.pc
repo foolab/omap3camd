@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/
+
+Name: omap3camd
+Description: omap3 cam daemon library!
+Version: 1.14
+Libs: -lomap3camd
+Cflags: -I${includedir}/omap3cam
+
