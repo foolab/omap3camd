@@ -321,8 +321,10 @@ typedef struct {
   cam_object_orientation_t rotation;
 } cam_object_tracking_t;
 
-// TODO:
-char maker_note_t[100]; // TODO:
+// break gst_subdevsrc_libomap3camd_get_makernote
+// break g_malloc
+// info registers -> r0
+unsigned char maker_note_t[4096];
 
 typedef struct {
   unsigned int low;
