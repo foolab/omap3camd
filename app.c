@@ -12,57 +12,7 @@
 // r1 -> first argument passed to cam_feature_set
 // r2 -> get that and match from subdevsrc maps.
 
-#if 0
-#define LIB "/usr/lib/libomap3camd.so.0.0.0"
-
 //  gcc -o app app.c `pkg-config gstreamer-0.10 gstreamer-plugins-bad-0.10 --cflags --libs`
-
-void *lib = NULL;
-void *(*_cam_library_create)();
-int (*_cam_feature_set)(void *handle, int feature, ...);
-
-void init_dl() {
-  if (lib) {
-    return;
-  }
-
-  lib = dlopen(LIB, RTLD_LAZY);
-  if (!lib) {
-    puts(dlerror());
-  }
-
-  _cam_library_create = dlsym(lib, "cam_library_create");
-  _cam_feature_set = dlsym(lib, "cam_feature_set");
-}
-
-void *cam_library_create() {
-  init_dl();
-
-  void *handle = _cam_library_create();
-
-  fprintf(stderr, "%s = 0x%x\n", __FUNCTION__, handle);
-
-  return handle;
-}
-
-int cam_feature_set(void *handle, int feature, ...) {
-  init_dl();
-
-  va_list args;
-  va_start (args, feature);
-  int ret = _cam_feature_set(handle, feature, args);
-  va_end (args);
-
-  fprintf(stderr, "%s %d => %d\n", __FUNCTION__, feature, ret);
-
-  return ret;
-}
-
-int cam_feature_get(void *handle, int feature, ...) {
-
-}
-
-#endif
 
 typedef struct {
   const gchar *id;
@@ -118,7 +68,6 @@ gboolean capture(test_data *data) {
   return FALSE; // bye!
 }
 
-/*
 gboolean autofocus(test_data *data) {
   puts("autofocus");
 
@@ -132,7 +81,7 @@ gboolean autofocus(test_data *data) {
 
   return FALSE; // bye!
 }
-*/
+
 test tests[] = {
   {"wb", "white-balance-mode", "White balance", 5, NULL},
   {"flash", "flash-mode", "Flash", 4, NULL},
@@ -144,11 +93,7 @@ test tests[] = {
   {"torch", "", "", -1, video_torch},
   {"zoom", "zoom", "Zoom", 3, NULL},
   {"capture", "", "", -1, capture},
-
-  //  {"af", "", "", -1, autofocus},
-  //  {"scene", "noise-reduction", "noise reduction", 
-  //	{"
-  //	  {"
+  {"af", "", "", -1, autofocus},
 
   {NULL, NULL, NULL, 0},
 };
@@ -193,8 +138,6 @@ int main(int argc, char *argv[]) {
 
   gst_init(&argc, &argv);
 
-  //  init_dl();
-
   GMainLoop *loop = g_main_loop_new(NULL, FALSE);
 
   GstElement *pipe = gst_pipeline_new(NULL);
@@ -206,7 +149,7 @@ int main(int argc, char *argv[]) {
 
   gst_element_set_state(pipe, GST_STATE_PLAYING);
 
-  puts("OK");
+  puts("Set break point now!");
 
   test *t = &tests[index];
 
