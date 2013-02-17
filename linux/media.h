@@ -129,4 +129,14 @@ struct media_links_enum {
 #define MEDIA_IOC_ENUM_LINKS            _IOWR('|', 0x02, struct media_links_enum)
 #define MEDIA_IOC_SETUP_LINK            _IOWR('|', 0x03, struct media_link_desc)
 
+/* Compatibility stuff */
+#define MEDIA_ENTITY_TYPE_NODE_V4L      MEDIA_ENT_T_DEVNODE_V4L
+#define MEDIA_ENTITY_TYPE_SUBDEV        MEDIA_ENT_T_V4L2_SUBDEV
+#define MEDIA_ENTITY_TYPE_MASK          MEDIA_ENT_TYPE_MASK
+#define MEDIA_ENTITY_TYPE_NODE          MEDIA_ENT_T_DEVNODE
+#define MEDIA_LINK_FLAG_ACTIVE          MEDIA_LNK_FL_ENABLED
+#define MEDIA_LINK_FLAG_IMMUTABLE       MEDIA_LNK_FL_IMMUTABLE
+#define MEDIA_PAD_FLAG_OUTPUT           MEDIA_PAD_FL_SOURCE
+#define MEDIA_PAD_FLAG_INPUT            MEDIA_PAD_FL_SINK
+
 #endif /* __LINUX_MEDIA_H */
