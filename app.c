@@ -2,6 +2,8 @@
 #include <glib.h>
 #include <dlfcn.h>
 #include <stdarg.h>
+#define GST_USE_UNSTABLE_API
+#include <gst/interfaces/photography.h>
 
 // Launch app under gdb.
 // Wait for OK then set a breakpoint on cam_feature_set
@@ -13,13 +15,17 @@
 #if 0
 #define LIB "/usr/lib/libomap3camd.so.0.0.0"
 
-//  gcc -o app app.c `pkg-config gstreamer-0.10 --cflags --libs`
+//  gcc -o app app.c `pkg-config gstreamer-0.10 gstreamer-plugins-bad-0.10 --cflags --libs`
 
 void *lib = NULL;
 void *(*_cam_library_create)();
 int (*_cam_feature_set)(void *handle, int feature, ...);
 
 void init_dl() {
+  if (lib) {
+    return;
+  }
+
   lib = dlopen(LIB, RTLD_LAZY);
   if (!lib) {
     puts(dlerror());
@@ -30,6 +36,8 @@ void init_dl() {
 }
 
 void *cam_library_create() {
+  init_dl();
+
   void *handle = _cam_library_create();
 
   fprintf(stderr, "%s = 0x%x\n", __FUNCTION__, handle);
@@ -38,6 +46,8 @@ void *cam_library_create() {
 }
 
 int cam_feature_set(void *handle, int feature, ...) {
+  init_dl();
+
   va_list args;
   va_start (args, feature);
   int ret = _cam_feature_set(handle, feature, args);
@@ -51,6 +61,7 @@ int cam_feature_set(void *handle, int feature, ...) {
 int cam_feature_get(void *handle, int feature, ...) {
 
 }
+
 #endif
 
 typedef struct {
@@ -65,6 +76,7 @@ typedef struct {
   GstElement *src;
   test *t;
   GMainLoop *loop;
+  GstPhotography *photo;
 } test_data;
 
 gboolean video_scene(test_data *data) {
@@ -88,6 +100,39 @@ gboolean video_torch(test_data *data) {
   return FALSE; // bye!
 }
 
+gboolean capture(test_data *data) {
+  puts("Capture");
+
+  GstCaps *mode_caps = gst_caps_new_simple ("video/x-raw-yuv",
+				   "format", GST_TYPE_FOURCC, GST_MAKE_FOURCC ('U', 'Y', 'V', 'Y'),
+				   "width", G_TYPE_INT, 640,
+				   "height", G_TYPE_INT, 480,
+				   "framerate", GST_TYPE_FRACTION, 2406, 100,
+				   NULL);
+
+  GstOperationMode op_mode = GST_PHOTOGRAPHY_OPERATION_MODE_IMAGE_CAPTURE;
+  gst_photography_set_format(data->photo, op_mode, mode_caps);
+
+  g_main_loop_quit(data->loop);
+
+  return FALSE; // bye!
+}
+
+/*
+gboolean autofocus(test_data *data) {
+  puts("autofocus");
+
+  puts("Enabling");
+  gst_photography_set_autofocus(data->photo, TRUE);
+
+  puts("Disabling");
+  gst_photography_set_autofocus(data->photo, FALSE);
+
+  g_main_loop_quit(data->loop);
+
+  return FALSE; // bye!
+}
+*/
 test tests[] = {
   {"wb", "white-balance-mode", "White balance", 5, NULL},
   {"flash", "flash-mode", "Flash", 4, NULL},
@@ -97,6 +142,10 @@ test tests[] = {
   {"scene", "scene-mode", "Image scene", 6, NULL},
   {"vs", "scene-mode", "Video scene", 6, video_scene},
   {"torch", "", "", -1, video_torch},
+  {"zoom", "zoom", "Zoom", 3, NULL},
+  {"capture", "", "", -1, capture},
+
+  //  {"af", "", "", -1, autofocus},
   //  {"scene", "noise-reduction", "noise reduction", 
   //	{"
   //	  {"
@@ -165,6 +214,7 @@ int main(int argc, char *argv[]) {
   data.src = src;
   data.t = t;
   data.loop = loop;
+  data.photo = GST_PHOTOGRAPHY(src);
 
   if (t->func) {
     g_timeout_add(2000, (GSourceFunc)t->func, &data);
