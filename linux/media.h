@@ -118,9 +118,9 @@ struct media_link_desc {
 struct media_links_enum {
 	__u32 entity;
 	/* Should have enough room for pads elements */
-	struct media_pad_desc __user *pads;
+	struct media_pad_desc *pads;
 	/* Should have enough room for links elements */
-	struct media_link_desc __user *links;
+	struct media_link_desc *links;
 	__u32 reserved[4];
 };
 
