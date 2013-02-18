@@ -7,4 +7,4 @@ Name: omap3camd
 Description: omap3 cam daemon library
 Version: 1.14
 Libs: -lomap3camd
-Cflags: -I${includedir}/omap3cam
+Cflags: -I${includedir}omap3cam
