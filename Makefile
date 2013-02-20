@@ -12,8 +12,5 @@ install:
 	mkdir -p $(DESTDIR)/usr/lib/pkgconfig/
 	cp libomap3camd.pc $(DESTDIR)/usr/lib/pkgconfig/
 
-	mkdir -p $(DESTDIR)/usr/include/linux/
-	cp linux/*.h $(DESTDIR)/usr/include/linux/
-
 clean:
 	rm -rf libomap3camd.so.0.0.0
