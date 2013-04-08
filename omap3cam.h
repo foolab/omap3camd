@@ -32,7 +32,7 @@
 #define CAM_LIGHT_FLASH_STATUS 43
 #define CAM_FOCUS_STATUS 23
 #define CAM_EXPOSURE_MODE_AUTO 0
-
+#define CAM_LIGHT_FLASH_REQUIRED 44
 #define OBJECT_TRACKING_MAX_COUNT 16
 
 typedef enum {
@@ -259,6 +259,10 @@ typedef enum {
   MACRO = 4,
   ACTION = 5,
 } cam_scene_capture_type_t;
+
+typedef enum {
+  CAM_LIGHT_FLASH_IS_REQUIRED, // TODO: value?
+} cam_light_flash_required_t;
 
 void *cam_library_create();
 void cam_library_delete(void *handle);
