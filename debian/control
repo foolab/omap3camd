@@ -1,0 +1,15 @@
+Source: libomap3camd
+Section: libs
+Priority: optional
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.8.0
+Maintainer: Mohammed Sameer <msameer@foolab.org>
+
+Package: libomap3camd
+Architecture: armel
+Depends: ${shlibs:Depends}
+Section: libs
+Priority: optional
+Description: OMAP3 camera Library and headers.
+ OMAP3 camera Library and headers.
+ INSTALL ONLY as a build dependency.
