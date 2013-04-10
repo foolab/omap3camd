@@ -4,6 +4,7 @@ libomap3camd.so.0.0.0: omap3cam.c Makefile
 	gcc -shared -fPIC -o libomap3camd.so.0.0.0 omap3cam.c -Wl,-soname=libomap3camd.so.0
 
 install:
+	mkdir -p $(DESTDIR)/usr/lib/
 	cp libomap3camd.so.0.0.0 $(DESTDIR)/usr/lib/
 	ln -sf $(DESTDIR)/usr/lib/libomap3camd.so.0.0.0 $(DESTDIR)/usr/lib/libomap3camd.so.0
 	ln -sf $(DESTDIR)/usr/lib/libomap3camd.so.0.0.0 $(DESTDIR)/usr/lib/libomap3camd.so
